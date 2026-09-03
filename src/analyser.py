@@ -1,4 +1,5 @@
 import math
+import sys
 from dataclasses import dataclass
 
 
@@ -11,21 +12,17 @@ def get_hidden_password(prompt):
         # reads one character from the keyboard
         character = sys.stdin.read(1)
 
-        # pressing enter means the user has finished typing
         if character in ("\n", "\r"):
             print()
             break
 
-        # a backspace removes the last character
         elif character in ("\b", "\x7f"):
             if password:
                 password.pop()
 
-        # adds normal characters to the password
         else:
             password.append(character)
 
-    # joins the characters together into the final password
     return "".join(password)
 
 
@@ -68,25 +65,20 @@ def main():
     print("Password Security Analyser")
     print("--------------------------")
 
-    # securely requests the password without displaying it
     password = get_hidden_password("Enter password to analyse: ")
 
-    # analyses the password
     analysis = analyse_password(password)
 
-    # displays the analysis results - the original password is never printed
     display_analysis(analysis)
 
 
 if __name__ == "__main__":
     main()
 
-# values are used to estimate the size of the character set that the password could have been generated from.
 LOWERCASE_SIZE = 26
 UPPERCASE_SIZE = 26
 DIGIT_SIZE = 10
 
-# ASCII symbols, there are 32 common printable symbols that aren't letters or digits
 SYMBOL_SIZE = 32
 
 
@@ -104,21 +96,17 @@ class PasswordAnalysis:
 
 
 def analyse_password(password: str) -> PasswordAnalysis:
-    # calculates the number of characters in the password
     length = len(password)
 
-    # checks whether the password contains at least one character from each of the main character categories
     has_lowercase = any(character.islower() for character in password)
     has_uppercase = any(character.isupper() for character in password)
     has_digits = any(character.isdigit() for character in password)
 
-    # symbol and whitespace handling
     has_symbols = any(
         not character.isalnum() and not character.isspace()
         for character in password
     )
 
-    # checking for spaces, tabs, newlines etc
     has_whitespace = any(character.isspace() for character in password)
 
     character_set_size = 0
@@ -135,17 +123,14 @@ def analyse_password(password: str) -> PasswordAnalysis:
     if has_symbols:
         character_set_size += SYMBOL_SIZE
     
-    # if the password contains whitespace, can add one extra category to represent it
     if has_whitespace:
         character_set_size += 1
 
-    # calculates the theoretical entropy
     if character_set_size > 0:
         entropy = length * math.log2(character_set_size)
     else:
         entropy = 0.0
 
-    # converts the entropy value into a strength category
     strength = assess_strength(entropy)
 
     return PasswordAnalysis(

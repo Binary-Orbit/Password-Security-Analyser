@@ -10,7 +10,6 @@ from analyser import analyse_password, assess_strength
 
 
 def test_password_length():
-    """Check that password length is calculated correctly."""
 
     result = analyse_password("Hello123!")
 
@@ -18,7 +17,6 @@ def test_password_length():
 
 
 def test_lowercase_detection():
-    """Check that lowercase characters are detected."""
 
     result = analyse_password("hello")
 
@@ -27,7 +25,6 @@ def test_lowercase_detection():
 
 
 def test_uppercase_detection():
-    """Check that uppercase characters are detected."""
 
     result = analyse_password("HELLO")
 
@@ -36,7 +33,6 @@ def test_uppercase_detection():
 
 
 def test_digit_detection():
-    """Check that digits are detected."""
 
     result = analyse_password("Password123")
 
@@ -44,7 +40,6 @@ def test_digit_detection():
 
 
 def test_symbol_detection():
-    """Check that symbols are detected."""
 
     result = analyse_password("Password!")
 
@@ -52,7 +47,6 @@ def test_symbol_detection():
 
 
 def test_whitespace_detection():
-    """Check that whitespace is detected."""
 
     result = analyse_password("Password 123")
 
@@ -60,18 +54,6 @@ def test_whitespace_detection():
 
 
 def test_character_set_size():
-    """
-    Check the assumed character-set size.
-
-    This password contains:
-    - lowercase = 26
-    - uppercase = 26
-    - digits = 10
-    - symbols = 32
-
-    Therefore:
-    N = 26 + 26 + 10 + 32 = 94
-    """
 
     result = analyse_password("Password123!")
 
@@ -79,7 +61,6 @@ def test_character_set_size():
 
 
 def test_entropy_calculation():
-    """Verify that entropy follows H = L * log2(N)."""
 
     password = "Password123!"
 
@@ -91,7 +72,6 @@ def test_entropy_calculation():
 
 
 def test_empty_password():
-    """Check that an empty password does not cause an error."""
 
     result = analyse_password("")
 
@@ -101,7 +81,6 @@ def test_empty_password():
 
 
 def test_whitespace_only_password():
-    """Check behaviour when the password contains only whitespace."""
 
     result = analyse_password("   ")
 
@@ -110,7 +89,6 @@ def test_whitespace_only_password():
 
 
 def test_strength_categories():
-    """Check that entropy values map to the correct categories."""
 
     assert assess_strength(10) == "Very Weak"
     assert assess_strength(30) == "Weak"
