@@ -2,6 +2,85 @@ import math
 from dataclasses import dataclass
 
 
+def get_hidden_password(prompt):
+    print(prompt, end="", flush=True)
+
+    password = []
+
+    while True:
+        # reads one character from the keyboard
+        character = sys.stdin.read(1)
+
+        # pressing enter means the user has finished typing
+        if character in ("\n", "\r"):
+            print()
+            break
+
+        # a backspace removes the last character
+        elif character in ("\b", "\x7f"):
+            if password:
+                password.pop()
+
+        # adds normal characters to the password
+        else:
+            password.append(character)
+
+    # joins the characters together into the final password
+    return "".join(password)
+
+
+def display_analysis(analysis):
+    print("\n" + "=" * 45)
+    print("       PASSWORD SECURITY ANALYSER")
+    print("=" * 45)
+
+    print(f"\nPassword length: {analysis.length}")
+
+    print("\nCharacter types:")
+    print(f"  Lowercase:  {'Yes' if analysis.has_lowercase else 'No'}")
+    print(f"  Uppercase:  {'Yes' if analysis.has_uppercase else 'No'}")
+    print(f"  Digits:     {'Yes' if analysis.has_digits else 'No'}")
+    print(f"  Symbols:    {'Yes' if analysis.has_symbols else 'No'}")
+    print(f"  Whitespace: {'Yes' if analysis.has_whitespace else 'No'}")
+
+    print("\nEntropy:")
+    print(f"  Character-set size (N): {analysis.character_set_size}")
+
+    print(
+        f"  H = L × log₂(N) = "
+        f"{analysis.length} × log₂({analysis.character_set_size})"
+    )
+
+    print(f"  Estimated entropy: {analysis.entropy:.2f} bits")
+
+    print("\nEducational assessment:")
+    print(f"  Strength: {analysis.strength}")
+
+    print("\nNote:")
+    print("  Entropy is a theoretical estimate.")
+    print("  Human-created passwords may be much more predictable")
+    print("  than the theoretical calculation suggests.")
+
+    print("=" * 45)
+
+
+def main():
+    print("Password Security Analyser")
+    print("--------------------------")
+
+    # securely requests the password without displaying it
+    password = get_hidden_password("Enter password to analyse: ")
+
+    # analyses the password
+    analysis = analyse_password(password)
+
+    # displays the analysis results - the original password is never printed
+    display_analysis(analysis)
+
+
+if __name__ == "__main__":
+    main()
+
 # values are used to estimate the size of the character set that the password could have been generated from.
 LOWERCASE_SIZE = 26
 UPPERCASE_SIZE = 26
@@ -13,13 +92,6 @@ SYMBOL_SIZE = 32
 
 @dataclass
 class PasswordAnalysis:
-    """
-    Stores all of the results from analysing a password.
-
-    Using a dataclass gives us one structured object containing
-    all of the information we want to display later.
-    """
-
     length: int
     has_lowercase: bool
     has_uppercase: bool
@@ -32,14 +104,6 @@ class PasswordAnalysis:
 
 
 def analyse_password(password: str) -> PasswordAnalysis:
-    """
-    Analyse the characteristics of a password.
-
-    The password itself is only passed into this function so that
-    we can analyse it. We do not return it, print it, or store it
-    in the PasswordAnalysis object.
-    """
-
     # calculates the number of characters in the password
     length = len(password)
 
@@ -98,14 +162,6 @@ def analyse_password(password: str) -> PasswordAnalysis:
 
 
 def assess_strength(entropy: float) -> str:
-    """
-    Convert theoretical entropy into an educational strength category.
-
-    These categories are simplified for this project and should
-    NOT be treated as an authoritative measure of real-world
-    password security.
-    """
-
     if entropy < 28:
         return "Very Weak"
 
