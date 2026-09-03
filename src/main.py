@@ -89,7 +89,7 @@ def main():
     print("--------------------------")
 
     # securely requests the password without displaying it
-    password = password = get_hidden_password("Enter password to analyse: ")
+    password = get_hidden_password("Enter password to analyse: ")
 
     # analyses the password
     analysis = analyse_password(password)
